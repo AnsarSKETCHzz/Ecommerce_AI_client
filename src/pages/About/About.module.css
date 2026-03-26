@@ -1,0 +1,111 @@
+.page {
+  padding-top: 72px;
+  overflow-x: hidden;
+}
+
+.section {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6) var(--container-padding);
+}
+
+.sectionHeader {
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sectionSub {
+  font-size: clamp(0.82rem, 1vw, 0.95rem);
+  color: var(--clr-muted);
+  margin-top: 0.4rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.textBlock {
+  max-width: 800px;
+}
+
+.textBlock h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--clr-text);
+}
+
+.textBlock p {
+  line-height: 1.7;
+  color: var(--clr-muted);
+  margin-bottom: 1rem;
+}
+
+.textBlock ul {
+  list-style: none;
+  padding: 0;
+}
+
+.textBlock li {
+  padding: 0.5rem 0;
+  color: var(--clr-muted);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.textBlock li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--clr-accent);
+  font-weight: bold;
+}
+
+.stats {
+  display: flex;
+  gap: clamp(2rem, 5vw, 4rem);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat span {
+  font-size: 0.9rem;
+  color: var(--clr-muted);
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .section {
+    max-width: none;
+    margin: 0;
+    padding: var(--space-6) 3rem var(--space-6) 2rem;
+  }
+}
