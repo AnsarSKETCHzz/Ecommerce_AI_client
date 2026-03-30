@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Signup.module.css";
 
 export default function Signup() {
@@ -10,6 +11,8 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setError("");
@@ -27,9 +30,19 @@ export default function Signup() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
+    
+    const result = await register(form.name, form.email, form.password, form.confirm);
+    
+    if (result.success) {
+      setDone(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } else {
+      setError(result.message);
+    }
+    
     setLoading(false);
-    setDone(true);
   };
 
   return (
@@ -61,7 +74,7 @@ export default function Signup() {
           >
             <span className={styles.successIcon}>✓</span>
             <p className={styles.successTitle}>Account created successfully!</p>
-            <Link to="/login" className={styles.backHome}>Sign in now →</Link>
+            <p className={styles.successSub}>Redirecting to home...</p>
           </motion.div>
         ) : (
           <>

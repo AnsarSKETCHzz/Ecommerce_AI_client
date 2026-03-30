@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import { AnimatePresence, motion } from "framer-motion";
 import { CartProvider } from "./context/CartContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Loader from "./components/Loader/Loader";
@@ -13,6 +14,8 @@ import Deals from "./pages/Deals/Deals";
 import About from "./pages/About/About";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
+import Profile from "./pages/Profile/Profile";
+import Orders from "./pages/Orders/Orders";
 import "./styles/global.css";
 
 const pageVariants = {
@@ -44,6 +47,8 @@ function AnimatedRoutes() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
           {!isAuthPage && <Footer />}
         </motion.div>
@@ -62,14 +67,16 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <CartProvider>
-        <Router>
-          <AnimatePresence>
-            {appLoading && <Loader key="loader" />}
-          </AnimatePresence>
-          {!appLoading && <AnimatedRoutes />}
-        </Router>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <AnimatePresence>
+              {appLoading && <Loader key="loader" />}
+            </AnimatePresence>
+            {!appLoading && <AnimatedRoutes />}
+          </Router>
+        </CartProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

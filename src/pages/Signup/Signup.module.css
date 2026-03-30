@@ -278,6 +278,11 @@
   opacity: 0.75;
 }
 
+.successSub {
+  font-size: 0.85rem;
+  color: var(--clr-muted);
+}
+
 /* ── Responsive ── */
 @media (max-width: 480px) {
   .card {

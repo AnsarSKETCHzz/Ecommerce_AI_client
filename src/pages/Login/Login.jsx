@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Login.module.css";
 
 export default function Login() {
@@ -8,15 +9,32 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
+    setError("");
+    
+    const result = await login(form.email, form.password);
+    
+    if (result.success) {
+      setDone(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+    } else {
+      setError(result.message);
+    }
+    
     setLoading(false);
-    setDone(true);
   };
 
   return (
@@ -47,8 +65,8 @@ export default function Login() {
             animate={{ opacity: 1, scale: 1 }}
           >
             <span className={styles.successIcon}>✓</span>
-            <p className={styles.successTitle}>Logged in successfully!</p>
-            <Link to="/" className={styles.backHome}>Back to Home →</Link>
+            <p className={styles.successTitle}>Welcome back!</p>
+            <p className={styles.successSub}>Redirecting to home...</p>
           </motion.div>
         ) : (
           <>
@@ -92,6 +110,16 @@ export default function Login() {
                   </button>
                 </div>
               </div>
+
+              {error && (
+                <motion.p
+                  className={styles.errorMsg}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  ⚠ {error}
+                </motion.p>
+              )}
 
               <motion.button
                 type="submit"

@@ -3,13 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../../context/CartContext";
 import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const { totalItems, setIsOpen } = useCart();
   const { isLightTheme, toggleTheme } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -104,7 +107,49 @@ export default function Navbar() {
             </AnimatePresence>
           </button>
 
-          <Link to="/login" className={styles.loginBtn}>Sign In</Link>
+          {isAuthenticated ? (
+            <div className={styles.userMenu}>
+              <button 
+                className={styles.userBtn} 
+                onClick={() => setShowDropdown(!showDropdown)}
+                aria-label="User menu"
+              >
+                <span className={styles.userName}>Hey {user?.name?.split(' ')[0]}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.div
+                    className={styles.dropdown}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Link to="/profile" className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
+                      Profile
+                    </Link>
+                    <Link to="/orders" className={styles.dropdownItem} onClick={() => setShowDropdown(false)}>
+                      My Orders
+                    </Link>
+                    <button 
+                      className={styles.dropdownItem} 
+                      onClick={() => {
+                        logout();
+                        setShowDropdown(false);
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <Link to="/login" className={styles.loginBtn}>Sign In</Link>
+          )}
 
           <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             <span></span><span></span><span></span>
@@ -133,8 +178,27 @@ export default function Navbar() {
             >
               {isLightTheme ? '🌙 Dark Theme' : '☀️ Light Theme'}
             </button>
-            <Link to="/login" className={styles.mobileLink}>Sign In</Link>
-            <Link to="/signup" className={styles.mobileLink}>Create Account</Link>
+            {isAuthenticated ? (
+              <>
+                <div className={styles.mobileLink} style={{ fontWeight: 'bold', color: 'var(--accent)' }}>
+                  Hey {user?.name}
+                </div>
+                <Link to="/profile" className={styles.mobileLink}>Profile</Link>
+                <Link to="/orders" className={styles.mobileLink}>My Orders</Link>
+                <button 
+                  onClick={logout}
+                  className={styles.mobileLink}
+                  style={{ background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', width: '100%' }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className={styles.mobileLink}>Sign In</Link>
+                <Link to="/signup" className={styles.mobileLink}>Create Account</Link>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
